@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Category;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductAsset;
 use Illuminate\Http\Request;
 
 class CategoryProductController extends ApiController
@@ -37,9 +39,28 @@ class CategoryProductController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Category $category, Product $product)
     {
-        //
+        $rules =[
+            'name' => 'required',
+            'slug' => 'required',
+            'price' => 'required|integer|min:500',
+            'image' => 'required|image',
+        ];
+        $this->validate($request, $rules);
+
+        $data = $request->all();
+        
+        $datas['image'] = $request->image->store('');
+        $datas['product_id'] = $product->id;
+
+        $data['category_id'] = $category->id;
+       $pid =  $data['product_id'] = $product->id;
+
+        ProductAsset::create($datas);
+        $products = Product::create($data);
+
+        return $this->showOne($products);    
     }
 
     /**

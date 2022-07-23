@@ -21,7 +21,6 @@ class ProductFactory extends Factory
             'category_id' => Category::inRandomOrder()->first()->id,
             'name' => $this->faker->word(),
             'slug' => $this->faker->word(),
-            'image' => $this->faker->randomElement(['1.jpg', '2.jpg', '3.jpg']),
             'price' => $this->faker->randomElement([80000, 30000, 500000, 250000]),
         ];
     }

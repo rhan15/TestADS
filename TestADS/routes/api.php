@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 /*- category -*/
 Route::resource('categories', 'App\Http\Controllers\Category\CategoryController', ['except' => ['create', 'edit']]);
-Route::resource('categories.products', 'App\Http\Controllers\Category\CategoryProductController', ['only' => ['index']]);
+Route::resource('categories.products', 'App\Http\Controllers\Category\CategoryProductController', ['only' => ['index','store']]);
 
 
 /*- product -*/

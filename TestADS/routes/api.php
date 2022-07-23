@@ -21,7 +21,7 @@ Route::resource('categories.products', 'App\Http\Controllers\Category\CategoryPr
 
 /*- product -*/
 Route::resource('products', 'App\Http\Controllers\Product\ProductController', ['except' => ['create', 'edit']]);
-Route::resource('products.productassets', 'App\Http\Controllers\Product\ProductProductAssetController', ['only' => ['index']]);
+Route::resource('products.productassets', 'App\Http\Controllers\Product\ProductProductAssetController', ['except' => ['create', 'edit']]);
 
 /*- productasset -*/
 Route::resource('productassets', 'App\Http\Controllers\ProductAsset\ProductAssetController', ['except' => ['create', 'edit']]);

@@ -39,7 +39,7 @@ class CategoryProductController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Category $category, Product $product)
+    public function store(Request $request, Category $category, Product $product, ProductAsset $productAsset)
     {
         $rules =[
             'name' => 'required',
@@ -50,17 +50,26 @@ class CategoryProductController extends ApiController
         $this->validate($request, $rules);
 
         $data = $request->all();
+
         
-        $datas['image'] = $request->image->store('');
-        $datas['product_id'] = $product->id;
+        
+        // $datas['image'] = $request->image->store('');
+        // $datas['product_id'] = $product->id;
 
         $data['category_id'] = $category->id;
-       $pid =  $data['product_id'] = $product->id;
+        $data['product_id'] = $product->id;
 
-        ProductAsset::create($datas);
+
+        $productAsset = ProductAsset::create([
+            'product_id' => $category->products->id,
+            'image' => $request->image->store(''),
+        ]);
+
         $products = Product::create($data);
 
-        return $this->showOne($products);    
+        return $this->showOne($products);  
+    
+    
     }
 
     /**

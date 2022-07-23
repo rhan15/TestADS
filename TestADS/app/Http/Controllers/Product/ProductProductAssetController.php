@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductAsset;
 use Illuminate\Http\Request;
 
 class ProductProductAssetController extends ApiController
@@ -37,9 +38,21 @@ class ProductProductAssetController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Product $product)
     {
-        //
+        $rules =[
+            'image' => 'required|image',
+        ];
+        $this->validate($request, $rules);
+
+        $data = $request->all();
+
+        $data['image'] = $request->image->store('');
+        $data['product_id'] = $product->id;
+
+        $products = ProductAsset::create($data);
+
+        return $this->showOne($products); 
     }
 
     /**
@@ -84,6 +97,8 @@ class ProductProductAssetController extends ApiController
      */
     public function destroy(Product $product)
     {
-        //
+         $product->productassets->delete();
+
+         
     }
 }

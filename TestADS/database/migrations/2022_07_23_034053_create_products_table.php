@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('slug');
             $table->unsignedBigInteger('price');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('category_id')->references('id')->on('categories');
         });

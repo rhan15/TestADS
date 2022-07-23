@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductAsset;
 use Illuminate\Http\Request;
 
 class ProductController extends ApiController
@@ -51,7 +52,9 @@ class ProductController extends ApiController
      */
     public function show(Product $product)
     {
-        //
+       
+        return $this->showOne($product);
+    
     }
 
     /**
@@ -74,7 +77,23 @@ class ProductController extends ApiController
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $product->fill($request->only([
+            'name',
+            'slug',
+            'price',
+        ]));
+
+        
+        if ($product->isClean()) {
+                return $this->errorResponse('Kamu harus menspesifikasi value yang berbeda untuk di update', 422);
+        }
+
+       
+
+        
+        $product->save();
+
+        return $this->showOne($product);
     }
 
     /**
@@ -83,8 +102,11 @@ class ProductController extends ApiController
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product, ProductAsset $productAsset)
     {
-        //
+        $product->delete();
+        // ProductAsset::delete($productAsset->id);
+
+        return $this->showOne($product);
     }
 }

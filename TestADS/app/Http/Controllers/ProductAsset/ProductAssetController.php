@@ -50,7 +50,7 @@ class ProductAssetController extends ApiController
      */
     public function show(ProductAsset $productAsset)
     {
-        //
+        return $this->showOne($productAsset);
     }
 
     /**
@@ -84,6 +84,9 @@ class ProductAssetController extends ApiController
      */
     public function destroy(ProductAsset $productAsset)
     {
-        //
+        $productAsset->delete();
+        
+
+        return $this->showOne($productAsset);
     }
 }

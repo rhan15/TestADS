@@ -19,6 +19,7 @@ trait ApiResponser
 
     protected function showAll(Collection $collection, $code = 200)
     {
+        $collection = $this->sortData($collection);
         return $this->successResponse(['data' => $collection], $code);
     }
 
@@ -27,4 +28,14 @@ trait ApiResponser
         return $this->successResponse(['$data' => $model], $code);
     }
 
+
+    protected function sortData (Collection $collection) 
+    {
+        if (request()->has('sort_by')) {
+            $attribute = request()->sort_by;
+
+            $collection = $collection->sortByDesc($attribute);
+        }
+        return $collection;
+    }
 }

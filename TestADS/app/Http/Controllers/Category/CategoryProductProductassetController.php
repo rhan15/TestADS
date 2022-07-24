@@ -9,18 +9,16 @@ use App\Models\Product;
 use App\Models\ProductAsset;
 use Illuminate\Http\Request;
 
-class CategoryProductController extends ApiController
+class CategoryProductProductassetController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Category $category)
+    public function index()
     {
-        $products = $category->products;
-
-        return $this->showAll($products);
+        //
     }
 
     /**
@@ -39,9 +37,32 @@ class CategoryProductController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Category $category, Product $product, ProductAsset $productAsset)
+    public function store(Request $request, Category $category, Product $product)
     {
-        //
+        $rules =[
+            'name' => 'required',
+            'slug' => 'required',
+            'price' => 'required|integer|min:500',
+            'image' => 'required|image',
+        ];
+        $this->validate($request, $rules);
+
+        $data = $request->all();
+
+        
+        $data['category_id'] = $category->id;
+        
+        //$data['product_id'] = $product->id;
+
+
+        $productAsset = ProductAsset::create([
+            'product_id' => $product->id,
+            'image' => $request->image->store(''),
+        ]);
+
+        $products = Product::create($data);
+
+        return $this->showOne($products); 
     }
 
     /**

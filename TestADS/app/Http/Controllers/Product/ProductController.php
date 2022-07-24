@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAsset;
 use Illuminate\Http\Request;
@@ -17,20 +18,10 @@ class ProductController extends ApiController
      */
     public function index()
     {
-        
-        $product = Product::all();
+
+        $product = Product::with('productAssets')->get();
 
         return $this->showAll($product);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -39,9 +30,34 @@ class ProductController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Category $category, Product $product)
     {
-        
+        $rules = [
+            'name' => 'required',
+            'slug' => 'required',
+            'price' => 'required|integer|min:500',
+            'image' => 'required|image',
+        ];
+        $this->validate($request, $rules);
+
+        $data = $request->all();
+
+        // dd($product->id);
+        // $data['product_id'] = $product->id;
+
+        $data['category_id'] = $category->id;
+
+        //$data['product_id'] = $product->id;
+
+
+        $productAsset = ProductAsset::create([
+            'product_id' => $product->id,
+            'image' => $request->image->store(''),
+        ]);
+
+        $products = Product::create($data);
+
+        return $this->showOne($products);
     }
 
     /**
@@ -52,21 +68,10 @@ class ProductController extends ApiController
      */
     public function show(Product $product)
     {
-       
+
         return $this->showOne($product);
-    
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -83,14 +88,10 @@ class ProductController extends ApiController
             'price',
         ]));
 
-        
         if ($product->isClean()) {
-                return $this->errorResponse('Kamu harus menspesifikasi value yang berbeda untuk di update', 422);
+            return $this->errorResponse('Kamu harus menspesifikasi value yang berbeda untuk di update', 422);
         }
 
-       
-
-        
         $product->save();
 
         return $this->showOne($product);
@@ -104,9 +105,11 @@ class ProductController extends ApiController
      */
     public function destroy(Product $product, ProductAsset $productAsset)
     {
+        // dd($product->id);
+        ProductAsset::where('product_id', $product->id)->delete();
         $product->delete();
-        // ProductAsset::delete($productAsset->id);
+        
 
-        return $this->showOne($product);
+        return response()->noContent();
     }
 }

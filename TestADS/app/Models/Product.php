@@ -34,7 +34,7 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function productassets()
+    public function productAssets()
     {
         return $this->hasMany(ProductAsset::class);
     }

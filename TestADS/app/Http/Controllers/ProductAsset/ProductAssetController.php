@@ -82,11 +82,12 @@ class ProductAssetController extends ApiController
      * @param  \App\Models\ProductAsset  $productAsset
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductAsset $productAsset)
+    public function destroy(ProductAsset $productasset)
     {
-        $productAsset->delete();
-        
 
-        return $this->showOne($productAsset);
+        // dd($productasset);
+        $productasset->delete();
+        return response()->noContent();
+
     }
 }
